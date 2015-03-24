@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#c8d3e0">
+
+    <TextView android:id="@+id/section_label" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#943ff5"/>
+
+    <Button
+        android:id="@+id/plus_button"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:text="+"
+        android:textColor="#fff"
+        android:textSize="50dp"
+        android:layout_alignParentRight="true"
+        android:background="#642bbb"
+        />
+    <ListView
+        android:id="@+id/task_list"
+        android:layout_marginTop="80dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
+
+</RelativeLayout>

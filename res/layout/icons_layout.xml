@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:background="#c8d3e0">
+
+
+    <ImageView
+        android:layout_width="128dp"
+        android:layout_height="140dp"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/custom"/>
+    <ImageView
+        android:layout_marginLeft="130dp"
+        android:layout_width="128dp"
+        android:layout_height="140dp"
+        android:src="@drawable/birthday"/>
+    <ImageView
+        android:layout_marginLeft="250dp"
+        android:layout_width="128dp"
+        android:layout_height="140dp"
+        android:src="@drawable/meeting"/>
+    <ImageView
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="142dp"
+        android:layout_width="128dp"
+        android:layout_height="140dp"
+        android:src="@drawable/shopping"/>
+    <ImageView
+        android:layout_marginTop="142dp"
+        android:layout_marginLeft="130dp"
+        android:layout_width="128dp"
+        android:layout_height="140dp"
+        android:src="@drawable/date"/>
+    <ImageView
+        android:layout_marginTop="142dp"
+        android:layout_marginLeft="250dp"
+        android:layout_width="128dp"
+        android:layout_height="140dp"
+        android:src="@drawable/vacation"/>
+    <ImageView
+        android:layout_marginTop="284dp"
+        android:layout_marginLeft="10dp"
+        android:layout_width="128dp"
+        android:layout_height="140dp"
+        android:src="@drawable/pills"/>
+    <ImageView
+        android:layout_marginTop="284dp"
+        android:layout_marginLeft="130dp"
+        android:layout_width="128dp"
+        android:layout_height="140dp"
+        android:src="@drawable/gym"/>
+    <ImageView
+        android:layout_marginTop="284dp"
+        android:layout_marginLeft="250dp"
+        android:layout_width="128dp"
+        android:layout_height="140dp"
+        android:src="@drawable/homework"/>
+    <ImageView
+        android:layout_marginTop="426dp"
+        android:layout_marginLeft="10dp"
+        android:layout_width="128dp"
+        android:layout_height="140dp"
+        android:src="@drawable/party"/>
+    <ImageView
+        android:layout_marginTop="426dp"
+        android:layout_marginLeft="130dp"
+        android:layout_width="128dp"
+        android:layout_height="140dp"
+        android:src="@drawable/clean"/>
+    <ImageView
+        android:layout_marginTop="426dp"
+        android:layout_marginLeft="250dp"
+        android:layout_width="128dp"
+        android:layout_height="140dp"
+        android:src="@drawable/call"/>
+
+
+</RelativeLayout>
