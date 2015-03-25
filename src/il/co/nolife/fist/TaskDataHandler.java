@@ -18,7 +18,7 @@ import android.location.Location;
 public class TaskDataHandler extends SQLiteOpenHelper {
 
 	public static final String DATABASE_NAME = "fistDatabase.db";
-	public static final int DATABASE_VERSION = 1;
+	public static final int DATABASE_VERSION = 2;
 	
 	public static final String TASKS_TABLE = "tasks";
 	public static final String ID = "tasks_id";
@@ -27,16 +27,18 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 	public static final String DATE = "date";
 	public static final String LONGITUDE = "loc_long";
 	public static final String LATITUDE = "loc_lat";
+	public static final String NOTIFY = "notify";
 	
 	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	public static final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
+	
 	
 	private SQLiteDatabase db;
-	private SimpleDateFormat dateFormat;
+	
 	
 	public TaskDataHandler(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		db = getWritableDatabase();
-		dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
 	}
 
 	@Override
@@ -48,7 +50,8 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 					+ DESCRIPTION + " ntext not null, "
 					+ DATE + " datetime, " 
 					+ LONGITUDE + " double, " 
-					+ LATITUDE + " double);");
+					+ LATITUDE + " double, "
+					+ NOTIFY + " boolean);");
 		
 	}
 
@@ -71,6 +74,7 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 	    values.put(DATE, dateFormat.format(task.GetDate()));
 	    values.put(LONGITUDE, task.GetLongitude());
 	    values.put(LATITUDE, task.GetLatitude());
+	    values.put(NOTIFY, task.GetNotify());
 	    
 	    db.insert(TASKS_TABLE, null, values);
 	    
@@ -88,6 +92,7 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 		int dateIndex = tasksData.getColumnIndex(DATE);
 		int longtitudeIndex = tasksData.getColumnIndex(LONGITUDE);
 		int latitudeIndex = tasksData.getColumnIndex(LATITUDE);
+		int notifyIndex = tasksData.getColumnIndex(NOTIFY);
 		
 		if(tasksData.moveToFirst()) {
 			do {
@@ -96,7 +101,8 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 											  dateFormat.parse(tasksData.getString(dateIndex)), 
 											  TaskType.values()[tasksData.getInt(typeIndex)], 
 											  tasksData.getLong(longtitudeIndex), 
-											  tasksData.getLong(latitudeIndex)));
+											  tasksData.getLong(latitudeIndex),
+											  tasksData.getInt(notifyIndex)));
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

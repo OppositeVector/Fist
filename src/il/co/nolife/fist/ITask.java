@@ -9,5 +9,6 @@ public interface ITask {
 	public Date GetDate();
 	public long GetLongitude();
 	public long GetLatitude();
+	public boolean GetNotify();
 	
 }

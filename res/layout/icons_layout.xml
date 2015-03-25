@@ -4,6 +4,7 @@
 
 
     <ImageView
+        android:id="@+id/custom"
         android:layout_width="128dp"
         android:layout_height="140dp"
         android:layout_marginLeft="10dp"
