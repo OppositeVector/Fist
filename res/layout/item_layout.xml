@@ -10,16 +10,18 @@
 
 
     <ImageView
+        android:id="@+id/item_icon"
         android:layout_width="94dp"
         android:layout_height="120dp"
-
         />
     <TextView
+        android:id="@+id/item_description"
         android:layout_marginLeft="95dp"
         android:layout_width="match_parent"
         android:layout_height="61dp"
        />
     <TextView
+        android:id="@+id/item_date"
         android:layout_marginLeft="95dp"
         android:layout_marginTop="61dp"
         android:layout_width="match_parent"

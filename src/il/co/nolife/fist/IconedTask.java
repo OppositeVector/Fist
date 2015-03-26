@@ -5,6 +5,7 @@ import android.location.Location;
 
 public class IconedTask implements ITask {
 
+	private int id;
 	private String description;
 	private Date date;
 	private TaskType type;
@@ -61,6 +62,44 @@ public class IconedTask implements ITask {
 	@Override 
 	public boolean GetNotify() {
 		return notify;
+	}
+	
+	public int GetId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public void setType(TaskType type) {
+		this.type = type;
+	}
+
+	public void setLongitude(long longitude) {
+		this.longitude = longitude;
+	}
+
+	public void setLatitude(long latitude) {
+		this.latitude = latitude;
+	}
+
+	public void setNotify(int notify) {
+		
+		if(notify == 0) {
+			this.notify = false;
+		} else {
+			this.notify = true;
+		}
+		
 	}
 	
 }
