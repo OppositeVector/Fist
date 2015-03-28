@@ -31,8 +31,8 @@ public class MainActivity extends Activity {
 		doa = new TaskDataHandler(this);
 		filteredList = new ArrayList<ITask>();
 		UpdateList();
-		listAdapter = new TaskListAdapter(this, filteredList);
 		ListView lv = (ListView) findViewById(R.id.task_list);
+		listAdapter = new TaskListAdapter(this, filteredList);
 		lv.setAdapter(listAdapter);
 		
 		Button newTaskButton = (Button) findViewById(R.id.plus_button);

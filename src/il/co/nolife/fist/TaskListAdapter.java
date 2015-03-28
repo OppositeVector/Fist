@@ -17,7 +17,10 @@ public class TaskListAdapter extends ArrayAdapter<ITask> {
 	private List<ITask> tasks;
 	private LayoutInflater inflater;
 	
-	View CurrentlyDragged;
+	View currentlyDragged;
+	float offset;
+	float originalX;
+	float downX;
 	
 	private class ViewHolder {
 		
@@ -59,11 +62,8 @@ public class TaskListAdapter extends ArrayAdapter<ITask> {
 					switch(event.getAction()) {
 						
 						case MotionEvent.ACTION_DOWN:
-							break;
-						case MotionEvent.ACTION_UP:
-							break;
-						case MotionEvent.ACTION_MOVE:
-							
+							DraggableListView.currentlyPressed = v;
+							DraggableListView.currentlyPressedOriginalX = v.getX();
 							break;
 						
 					}
@@ -73,9 +73,9 @@ public class TaskListAdapter extends ArrayAdapter<ITask> {
 			
 		}
 		
-		holder.icon.setImageResource(tasks.get(position).GetType().GetDrawable());
-		holder.text.setText(tasks.get(position).GetDescription());
-		holder.date.setText(tasks.get(position).GetDate().toString());
+		holder.icon.setImageResource(tasks.get(position).getType().GetDrawable());
+		holder.text.setText(tasks.get(position).getDescription());
+		holder.date.setText(tasks.get(position).getDate().toString());
 		
 		return convertView;
 		

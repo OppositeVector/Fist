@@ -22,7 +22,7 @@ import android.util.Log;
 public class TaskDataHandler extends SQLiteOpenHelper {
 
 	public static final String DATABASE_NAME = "fistDatabase.db";
-	public static final int DATABASE_VERSION = 2;
+	public static final int DATABASE_VERSION = 3;
 	
 	public static final String TASKS_TABLE = "tasks";
 	public static final String ID = "tasks_id";
@@ -32,6 +32,8 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 	public static final String LONGITUDE = "loc_long";
 	public static final String LATITUDE = "loc_lat";
 	public static final String NOTIFY = "notify";
+	public static final String ALARM_ID = "alarm_id";
+	public static final String GEO_ID = "geo_id";
 	
 	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	public static final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
@@ -49,6 +51,7 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase database) {
 		
+		Log.i("HERE", "BEFORE");
 		database.execSQL("create table "
 					+ TASKS_TABLE + "(" + ID + " integer primary key autoincrement, " 
 					+ TYPE + " integer, " 
@@ -56,7 +59,11 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 					+ DATE + " datetime, " 
 					+ LONGITUDE + " double, " 
 					+ LATITUDE + " double, "
-					+ NOTIFY + " boolean);");
+					+ NOTIFY + " boolean, "
+					+ ALARM_ID + " integer default -1, "
+					+ GEO_ID + " text default '0');");
+		
+		Log.i("HERE", "AFTER");
 		
 	}
 
@@ -70,21 +77,53 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 		
 	}
 
-	public void CreateTask(ITask task) {
+	public int CreateTask(IconedTask task) {
 		
 		ContentValues values = new ContentValues();
 		
-	    values.put(DESCRIPTION, task.GetDescription());
-	    values.put(TYPE, task.GetType().ordinal());
-	    values.put(DATE, dateFormat.format(task.GetDate()));
-	    values.put(LONGITUDE, task.GetLongitude());
-	    values.put(LATITUDE, task.GetLatitude());
-	    values.put(NOTIFY, task.GetNotify());
+	    values.put(DESCRIPTION, task.getDescription());
+	    values.put(TYPE, task.getType().ordinal());
+	    values.put(DATE, dateFormat.format(task.getDate()));
+	    values.put(LONGITUDE, task.getLongitude());
+	    values.put(LATITUDE, task.getLatitude());
+	    values.put(NOTIFY, task.getNotify());
+	    values.put(ALARM_ID, task.getAlarmId());
+	    values.put(GEO_ID, task.getGeofence());
 	    
-	    db.insert(TASKS_TABLE, null, values);
+	    return (int) db.insert(TASKS_TABLE, null, values);
 	    
 	}
+	
+	public ITask GetTask(int id) {
 		
+		Cursor tasksData = db.rawQuery("select * from " + TASKS_TABLE + " where " + ID + "='" + id + "'", null);
+		tasksData.moveToFirst();
+		
+		int idIndex = tasksData.getColumnIndex(ID);
+		int desriptionIndex = tasksData.getColumnIndex(DESCRIPTION);
+		int typeIndex = tasksData.getColumnIndex(TYPE);
+		int dateIndex = tasksData.getColumnIndex(DATE);
+		int longitudeIndex = tasksData.getColumnIndex(LONGITUDE);
+		int latitudeIndex = tasksData.getColumnIndex(LATITUDE);
+		int notifyIndex = tasksData.getColumnIndex(NOTIFY);
+		
+		String desc = tasksData.getString(desriptionIndex);
+		Date date;
+		try {
+			date = dateFormat.parse(tasksData.getString(dateIndex));
+		} catch (ParseException e) {
+			e.printStackTrace();
+			date = new Date();
+		}
+		TaskType type = TaskType.values()[tasksData.getInt(typeIndex)];
+		long longitude = tasksData.getLong(longitudeIndex);
+		long latitude = tasksData.getLong(latitudeIndex);
+		int notify = tasksData.getInt(notifyIndex);
+		
+		return new IconedTask(tasksData.getString(desriptionIndex), date, type, longitude, latitude, notify);
+		
+	}
+	
 	public void GetTasks(List<ITask> taskList) {
 	
 		if(taskList == null) {
@@ -148,6 +187,70 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 			} while(tasksData.moveToNext());
 			
 		}
+		
+	}
+	
+	public List<ComboData> GetAlarmData() {
+		
+		List<ComboData> retVal = new ArrayList<ComboData>();
+		
+		Cursor tasksData = db.rawQuery("select * from " + TASKS_TABLE, null);
+		
+		// Log.i("SQL DUMP: ", DatabaseUtils.dumpCursorToString(tasksData));
+		
+		int idIndex = tasksData.getColumnIndex(ID);
+		// int desriptionIndex = tasksData.getColumnIndex(DESCRIPTION);
+		// int typeIndex = tasksData.getColumnIndex(TYPE);
+		int dateIndex = tasksData.getColumnIndex(DATE);
+		int longitudeIndex = tasksData.getColumnIndex(LONGITUDE);
+		int latitudeIndex = tasksData.getColumnIndex(LATITUDE);
+		int notifyIndex = tasksData.getColumnIndex(NOTIFY);
+		int alarmIndex = tasksData.getColumnIndex(ALARM_ID);
+		int geoIndex = tasksData.getColumnIndex(GEO_ID);
+		
+		int id;
+		// String desc;
+		//TaskType type;
+		Date date;
+		long longitude;
+		long latitude;
+		int notify;
+		int alarm;
+		String geofence;
+		
+		if(tasksData.moveToFirst()) {
+			do {
+				
+				// desc = tasksData.getString(desriptionIndex);
+				// type = TaskType.values()[tasksData.getInt(typeIndex)];
+				id = tasksData.getInt(idIndex);
+				try {
+					date = dateFormat.parse(tasksData.getString(dateIndex));
+				} catch (ParseException e) {
+					e.printStackTrace();
+					date = new Date();
+				}
+				longitude = tasksData.getLong(longitudeIndex);
+				latitude = tasksData.getLong(latitudeIndex);
+				notify = tasksData.getInt(notifyIndex);
+				alarm = tasksData.getInt(alarmIndex);
+				
+				ComboData d = new ComboData(id, date, notify, longitude, latitude);
+				
+				if(notify != 0) {
+					if(alarm > -1) {
+						d.setAlarmId(alarm);
+					}
+				}
+				
+				retVal.add(d);
+				
+				
+			} while(tasksData.moveToNext());
+			
+		}
+		
+		return retVal;
 		
 	}
 	

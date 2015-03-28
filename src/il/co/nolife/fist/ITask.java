@@ -4,13 +4,13 @@ import java.util.Date;
 
 public interface ITask {
 
-	public int GetId();
-	public TaskType GetType();
-	public String GetDescription();
-	public Date GetDate();
-	public long GetLongitude();
-	public long GetLatitude();
-	public boolean GetNotify();
+	// public int getId();
+	public TaskType getType();
+	public String getDescription();
+	public Date getDate();
+	public long getLongitude();
+	public long getLatitude();
+	public boolean getNotify();
 	
 	public void setType(TaskType type);
 	public void setDescription(String decscription);

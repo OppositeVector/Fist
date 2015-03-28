@@ -3,10 +3,15 @@ package il.co.nolife.fist;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -67,7 +72,33 @@ public class TaskCreator extends Activity {
 		Date d = GetDateTimeFromPickers(date, time);
 		boolean n = notify.isChecked();
 		
-		dataHandler.CreateTask(new IconedTask(desc, d, selectedType, 0, 0, n));
+		IconedTask task = new IconedTask(desc, d, selectedType, 0, 0, n);
+		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+		
+		int id = dataHandler.CreateTask(task);
+		
+		if(n) {
+			
+			Random r = new Random(new Date().getTime());
+			Intent intent = new Intent(this, AlarmWaker.class);
+			intent.putExtra("id", id);
+			PendingIntent pIntent;
+			
+			do {
+				
+				int rand = r.nextInt(2000000000);
+				Log.i("Spinning", "You spin my head right round right round: " + rand);
+				task.setAlarmId(rand);
+				pIntent = PendingIntent.getBroadcast(this, task.getAlarmId(), intent, PendingIntent.FLAG_NO_CREATE);
+				
+			} while(pIntent != null); 
+			
+			pIntent = PendingIntent.getBroadcast(this, task.getAlarmId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+			am.set(AlarmManager.RTC_WAKEUP, task.getDate().getTime(), pIntent);
+			
+		}
+		
+		
 		
 		finish();
 		
