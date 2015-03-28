@@ -24,10 +24,10 @@ public enum TaskType {
 	
 	public static List<TaskType> GetList (){
 		List<TaskType> l = new ArrayList<TaskType>();
-		l.add(Birthday);
-		l.add(Call);
-		l.add(Clean);
 		l.add(Custom);
+		l.add(Birthday);
+		l.add(Clean);
+		l.add(Call);
 		l.add(Date);
 		l.add(Gym);
 		l.add(Homework);

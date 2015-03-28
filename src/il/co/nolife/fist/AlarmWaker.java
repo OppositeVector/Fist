@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +18,7 @@ public class AlarmWaker extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.alarm_layout);
 		Log.i("HERE", "HERE");
 		

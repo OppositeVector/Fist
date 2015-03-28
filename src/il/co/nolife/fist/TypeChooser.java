@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -20,6 +21,7 @@ public class TypeChooser extends Activity implements ButtonClickAction {
 			
 		Log.i("TESTING", "HERE");
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.icons_layout);
 		
 		

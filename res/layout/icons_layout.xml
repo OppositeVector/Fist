@@ -9,10 +9,9 @@
 	    android:layout_alignParentTop="true"
 	    android:background="#567577"
 	    android:gravity="center"
-	    android:horizontalSpacing="10dp"
+	    android:horizontalSpacing="2dp"
 	    android:numColumns="3"
-	    android:stretchMode="columnWidth"
-	    android:verticalSpacing="10dp" >
+	    android:stretchMode="columnWidth" >
 	    
 	</GridView>
 

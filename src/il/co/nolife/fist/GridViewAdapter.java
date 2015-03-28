@@ -42,7 +42,7 @@ public class GridViewAdapter extends ArrayAdapter<TaskType> {
 			Log.i("TESTING", "1");
 			holder.icon = new ImageView(con);
 			Log.i("TESTING", "2");
-			holder.icon.setLayoutParams(new GridView.LayoutParams(110,140));
+			holder.icon.setLayoutParams(new GridView.LayoutParams(220,280));
 			Log.i("TESTING", "3");
 			holder.icon.setScaleType(ImageView.ScaleType.CENTER_CROP);
 			Log.i("TESTING", "4");
