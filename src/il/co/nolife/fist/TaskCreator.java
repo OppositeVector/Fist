@@ -89,7 +89,6 @@ public class TaskCreator extends Activity {
 			do {
 				
 				int rand = r.nextInt(2000000000);
-				Log.i("Spinning", "You spin my head right round right round: " + rand);
 				task.setAlarmId(rand);
 				pIntent = PendingIntent.getBroadcast(this, task.getAlarmId(), intent, PendingIntent.FLAG_NO_CREATE);
 				
@@ -100,8 +99,7 @@ public class TaskCreator extends Activity {
 			
 		}
 		
-		
-		
+		setResult(RESULT_OK);
 		finish();
 		
 	}

@@ -40,16 +40,6 @@ public class MainActivity extends Activity {
 		lv.setAdapter(listAdapter);
 		
 		Button newTaskButton = (Button) findViewById(R.id.plus_button);
-		newTaskButton.setOnTouchListener(new View.OnTouchListener() {
-			
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if(event.getAction() == MotionEvent.ACTION_UP) {
-					v.performClick();
-				}
-				return true; // event used, parents will not see this event
-			}
-		});
 		newTaskButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -59,12 +49,28 @@ public class MainActivity extends Activity {
 			
 		});
 		
+		Button completeButton = (Button) findViewById(R.id.complete_button);
+		completeButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				CompleteButtonClicked();
+			}
+		});
+		
 	}
 	
 	private void PlusButtonClicked() {
 		
 		Intent chooseType = new Intent(this, TypeChooser.class);
 		startActivityForResult(chooseType, 0);
+		
+	}
+	
+	private void CompleteButtonClicked() {
+		
+		Intent intent = new Intent(this, CompletedActivity.class);
+		startActivityForResult(intent, 0);
 		
 	}
 	

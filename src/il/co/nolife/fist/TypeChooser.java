@@ -19,26 +19,13 @@ public class TypeChooser extends Activity implements ButtonClickAction {
 	
 	protected void onCreate(Bundle savedInstanceState) {
 			
-		Log.i("TESTING", "HERE");
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.icons_layout);
 		
-		
 		GridViewAdapter gridvA = new GridViewAdapter(this, TaskType.GetList(), this);
-		Log.i("TESTING", "GridViewAdapter");
 		GridView g = (GridView) findViewById(R.id.gridview);
-		Log.i("TESTING", "GridViewAdapter2");
 		g.setAdapter(gridvA);
-		Log.i("TESTING", "GridViewAdapter3");
-//		ImageView b = (ImageView) findViewById(R.id.custom);
-//		b.setOnClickListener(new View.OnClickListener() {
-//			
-//			@Override
-//			public void onClick(View v) {
-//				ButtonClicked(TaskType.Custom);
-//			}
-//		});
 		
 	}
 	
@@ -52,8 +39,11 @@ public class TypeChooser extends Activity implements ButtonClickAction {
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		
-		finish();
+
+		if(resultCode != RESULT_CANCELED) {
+			setResult(RESULT_OK);
+			finish();
+		}
 		
 	}
 	
