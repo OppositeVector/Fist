@@ -387,8 +387,8 @@ public class TouchInterceptor extends ListView {
         
         Context context = getContext();
         ImageView v = new ImageView(context);
-        int backGroundColor = context.getResources().getColor(R.color.common_signin_btn_dark_text_default);
-        v.setBackgroundColor(backGroundColor);
+       // int backGroundColor = context.getResources().getColor(R.color.common_signin_btn_dark_text_default);
+       // v.setBackgroundColor(backGroundColor);
         // v.setBackgroundResource(R.drawable.playlist_tile_drag);
         v.setPadding(0, 0, 0, 0);
         v.setImageBitmap(bm);

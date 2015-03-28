@@ -1,5 +1,8 @@
 package il.co.nolife.fist;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum TaskType {
 
 	Birthday(R.drawable.birthday),
@@ -19,4 +22,23 @@ public enum TaskType {
 	private TaskType(int di) { drawableId = di; }
 	public int GetDrawable() { return drawableId; }
 	
+	public static List<TaskType> GetList (){
+		List<TaskType> l = new ArrayList<TaskType>();
+		l.add(Birthday);
+		l.add(Call);
+		l.add(Clean);
+		l.add(Custom);
+		l.add(Date);
+		l.add(Gym);
+		l.add(Homework);
+		l.add(Meeting);
+		l.add(Party);
+		l.add(Pills);
+		l.add(Shopping);
+		l.add(Vacation);
+		
+		return l;
+	}
+	
 }
+
