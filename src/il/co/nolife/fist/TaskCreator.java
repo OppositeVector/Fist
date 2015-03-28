@@ -95,6 +95,7 @@ public class TaskCreator extends Activity {
 			} while(pIntent != null); 
 			
 			pIntent = PendingIntent.getBroadcast(this, task.getAlarmId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+			Log.i("TESTING", "Alarm created!");
 			am.set(AlarmManager.RTC_WAKEUP, task.getDate().getTime(), pIntent);
 			
 		}

@@ -40,9 +40,9 @@ public class RebootAlarmSetter extends BroadcastReceiver {
 					aIntent.putExtra("id", current.getId());
 					if(current.getAlarmId() > -1) {
 						
-						pIntent = PendingIntent.getActivity(context, current.getAlarmId(), aIntent, PendingIntent.FLAG_NO_CREATE);
+						pIntent = PendingIntent.getBroadcast(context, current.getAlarmId(), aIntent, PendingIntent.FLAG_NO_CREATE);
 						if(pIntent == null) {
-							pIntent = PendingIntent.getActivity(context, current.getAlarmId(), aIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+							pIntent = PendingIntent.getBroadcast(context, current.getAlarmId(), aIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 							am.set(AlarmManager.RTC_WAKEUP, current.getDate().getTime(), pIntent);
 						}
 						
@@ -50,9 +50,9 @@ public class RebootAlarmSetter extends BroadcastReceiver {
 						
 						do {
 							current.setAlarmId(r.nextInt(200000000));
-							pIntent = PendingIntent.getActivity(context, current.getAlarmId(), aIntent, PendingIntent.FLAG_NO_CREATE);
+							pIntent = PendingIntent.getBroadcast(context, current.getAlarmId(), aIntent, PendingIntent.FLAG_NO_CREATE);
 						} while(pIntent != null);
-						pIntent = PendingIntent.getActivity(context, current.getAlarmId(), aIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+						pIntent = PendingIntent.getBroadcast(context, current.getAlarmId(), aIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 						am.set(AlarmManager.RTC_WAKEUP, current.getDate().getTime(), pIntent);
 						
 					}
