@@ -22,9 +22,10 @@ import android.util.Log;
 public class TaskDataHandler extends SQLiteOpenHelper {
 
 	public static final String DATABASE_NAME = "fistDatabase.db";
-	public static final int DATABASE_VERSION = 3;
+	public static final int DATABASE_VERSION = 4;
 	
 	public static final String TASKS_TABLE = "tasks";
+	public static final String COMPLETED_TABLE = "complete_task";
 	public static final String ID = "tasks_id";
 	public static final String DESCRIPTION = "task_description";
 	public static final String TYPE = "icon_type";
@@ -43,7 +44,6 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 	public TaskDataHandler(Context context) {
 		
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-		Log.i("TESTING", "TaskDataHandler after super class constructor");
 		db = getWritableDatabase();
 		
 	}
@@ -51,19 +51,27 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase database) {
 		
-		Log.i("HERE", "BEFORE");
 		database.execSQL("create table "
-					+ TASKS_TABLE + "(" + ID + " integer primary key autoincrement, " 
-					+ TYPE + " integer, " 
-					+ DESCRIPTION + " ntext not null, "
-					+ DATE + " datetime, " 
-					+ LONGITUDE + " double, " 
-					+ LATITUDE + " double, "
-					+ NOTIFY + " boolean, "
-					+ ALARM_ID + " integer default -1, "
-					+ GEO_ID + " text default '0');");
+				+ TASKS_TABLE + "(" + ID + " integer primary key autoincrement, " 
+				+ TYPE + " integer, " 
+				+ DESCRIPTION + " ntext not null, "
+				+ DATE + " datetime, " 
+				+ LONGITUDE + " double, " 
+				+ LATITUDE + " double, "
+				+ NOTIFY + " boolean, "
+				+ ALARM_ID + " integer default -1, "
+				+ GEO_ID + " text default '0');");
 		
-		Log.i("HERE", "AFTER");
+		database.execSQL("create table "
+				+ COMPLETED_TABLE + "(" + ID + " integer primary key autoincrement, " 
+				+ TYPE + " integer, " 
+				+ DESCRIPTION + " ntext not null, "
+				+ DATE + " datetime, " 
+				+ LONGITUDE + " double, " 
+				+ LATITUDE + " double, "
+				+ NOTIFY + " boolean, "
+				+ ALARM_ID + " integer default -1, "
+				+ GEO_ID + " text default '0');");
 		
 	}
 
@@ -72,6 +80,7 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 		
 		if(oldVersion < newVersion) {
 			database.execSQL("drop table if exists " + TASKS_TABLE);
+			database.execSQL("drop table if exists " + COMPLETED_TABLE);
 		    onCreate(database);
 		}
 		
@@ -91,6 +100,27 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 	    values.put(GEO_ID, task.getGeofence());
 	    
 	    return (int) db.insert(TASKS_TABLE, null, values);
+	    
+	}
+	
+	public void MoveTaskToComplete(ITask task) {
+		
+		IconedTask cTask = (IconedTask) task;
+		
+		db.execSQL("delete from " + TASKS_TABLE + " where " + ID + "='" + cTask.getId() + "'");
+		
+		ContentValues values = new ContentValues();
+		
+	    values.put(DESCRIPTION, cTask.getDescription());
+	    values.put(TYPE, cTask.getType().ordinal());
+	    values.put(DATE, dateFormat.format(cTask.getDate()));
+	    values.put(LONGITUDE, cTask.getLongitude());
+	    values.put(LATITUDE, cTask.getLatitude());
+	    values.put(NOTIFY, cTask.getNotify());
+	    values.put(ALARM_ID, cTask.getAlarmId());
+	    values.put(GEO_ID, cTask.getGeofence());
+		
+	    db.insert(COMPLETED_TABLE, null, values);
 	    
 	}
 	
@@ -135,7 +165,69 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 		
 		Cursor tasksData = db.rawQuery("select * from " + TASKS_TABLE, null);
 		
-		Log.i("SQL DUMP: ", DatabaseUtils.dumpCursorToString(tasksData));
+		int idIndex = tasksData.getColumnIndex(ID);
+		int desriptionIndex = tasksData.getColumnIndex(DESCRIPTION);
+		int typeIndex = tasksData.getColumnIndex(TYPE);
+		int dateIndex = tasksData.getColumnIndex(DATE);
+		int longitudeIndex = tasksData.getColumnIndex(LONGITUDE);
+		int latitudeIndex = tasksData.getColumnIndex(LATITUDE);
+		int notifyIndex = tasksData.getColumnIndex(NOTIFY);
+		
+		int id;
+		String desc;
+		Date date;
+		TaskType type;
+		long longitude;
+		long latitude;
+		int notify;
+		
+		Iterator<ITask> listIterator = taskList.iterator();
+		
+		if(tasksData.moveToFirst()) {
+			do {
+				
+				desc = tasksData.getString(desriptionIndex);
+				try {
+					date = dateFormat.parse(tasksData.getString(dateIndex));
+				} catch (ParseException e) {
+					e.printStackTrace();
+					date = new Date();
+				}
+				type = TaskType.values()[tasksData.getInt(typeIndex)];
+				longitude = tasksData.getLong(longitudeIndex);
+				latitude = tasksData.getLong(latitudeIndex);
+				notify = tasksData.getInt(notifyIndex);
+				
+				if(listIterator.hasNext()) {
+					
+					ITask current = listIterator.next();
+					current.setDescription(desc);
+					current.setDate(date);
+					current.setType(type);
+					current.setLongitude(longitude);
+					current.setLatitude(latitude);
+					current.setNotify(notify);
+					
+				} else {
+					
+					taskList.add(new IconedTask(desc, date, type, longitude, latitude, notify));
+				}
+			} while(tasksData.moveToNext());
+			
+		}
+		
+	}
+	
+	public void GetCompleteTasks(List<ITask> taskList) {
+		
+		if(taskList == null) {
+			
+			Log.e(getClass().toString(), "taskList given is null");
+			return;
+			
+		}
+		
+		Cursor tasksData = db.rawQuery("select * from " + COMPLETED_TABLE, null);
 		
 		int idIndex = tasksData.getColumnIndex(ID);
 		int desriptionIndex = tasksData.getColumnIndex(DESCRIPTION);

@@ -12,52 +12,17 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class AlarmWaker extends Activity {
+public class AlarmWaker extends BroadcastReceiver {
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		
-		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.alarm_layout);
-		Log.i("HERE", "HERE");
-		
-		ImageView typeImage = (ImageView) findViewById(R.id.alarm_image);
-		Log.i("HERE", "HERE");
-		TextView desc = (TextView) findViewById(R.id.alarm_desc);
-		Log.i("HERE", "HERE");
-		TextView time = (TextView) findViewById(R.id.alarm_time);
-		Log.i("HERE", "HERE");
-		
-		TaskDataHandler dataHandler = new TaskDataHandler(this);
-		Log.i("HERE", "HERE");
-		
-		ITask task = dataHandler.GetTask(getIntent().getIntExtra("id", -1));
-		Log.i("HERE", "HERE");
-		
-		typeImage.setImageResource(task.getType().GetDrawable());
-		Log.i("HERE", "HERE");
-		desc.setText(task.getDescription());
-		Log.i("HERE", "HERE");
-		time.setText(task.getDate().toString());
-		Log.i("HERE", "HERE");
-		
+	public void onReceive(Context context, Intent intent) {
+		Log.i(getClass().toString(), "Recieved !");
+		Intent toast = new Intent(context, AlarmToast.class);
+		Log.i(getClass().toString(), "Created Intent !");
+		toast.putExtra("id", intent.getIntExtra("id", -1));
+		Log.i(getClass().toString(), "Put Extra !");
+		toast.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		context.startActivity(toast);
 	}
-
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-
-		if(event.getAction() == MotionEvent.ACTION_UP) {
-			
-			Intent intent = new Intent(this, MainActivity.class);
-			startActivity(intent);
-			finish();
-			
-		}
-		return true;
-		
-	}
-	
-	
 	
 }

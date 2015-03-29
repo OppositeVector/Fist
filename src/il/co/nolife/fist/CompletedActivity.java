@@ -18,7 +18,7 @@ import android.widget.ListView;
 import android.content.Intent;
 import android.database.sqlite.*;
 
-public class MainActivity extends Activity {
+public class CompletedActivity extends Activity {
 	
 	private TaskDataHandler doa;
 	private TaskListAdapter listAdapter;
@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 	    requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.completed);
 		
 		doa = new TaskDataHandler(this);
 		filteredList = new ArrayList<ITask>();
@@ -49,12 +49,12 @@ public class MainActivity extends Activity {
 			
 		});
 		
-		Button completeButton = (Button) findViewById(R.id.complete_button);
-		completeButton.setOnClickListener(new View.OnClickListener() {
+		Button returnToMain = (Button) findViewById(R.id.circle_button);
+		returnToMain.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				CompleteButtonClicked();
+				ReturnButtonClicked();
 			}
 		});
 		
@@ -67,20 +67,23 @@ public class MainActivity extends Activity {
 		
 	}
 	
-	private void CompleteButtonClicked() {
+	private void ReturnButtonClicked() {
 		
-		Intent intent = new Intent(this, CompletedActivity.class);
-		startActivityForResult(intent, 0);
+		setResult(RESULT_OK);
+		finish();
 		
 	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		UpdateList();
+		if(resultCode != RESULT_CANCELED) {
+			setResult(RESULT_OK);
+			finish();
+		}
 	}
 	
 	void UpdateList() {
-		doa.GetTasks(filteredList);
+		doa.GetCompleteTasks(filteredList);
 	}
 	
 }
