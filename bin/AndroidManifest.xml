@@ -44,12 +44,11 @@
             android:name=".TaskCreator" 
             android:theme="@android:style/Theme.NoTitleBar">
         </activity>
-<<<<<<< HEAD
+        
         <activity
             android:name=".MapActivity" 
             android:theme="@android:style/Theme.NoTitleBar">
         </activity>
-=======
         
          <activity
             android:name=".CompletedActivity" 
@@ -61,7 +60,6 @@
             android:theme="@android:style/Theme.NoTitleBar">
          </activity>
         
->>>>>>> origin/master
          <receiver android:name="il.co.nolife.fist.RebootAlarmSetter">
              <intent-filter>
                  <action android:name="android.intent.action.BOOT_COMPLETED"/>
