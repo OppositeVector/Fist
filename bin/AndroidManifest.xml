@@ -6,10 +6,18 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.RECIEVE_BOOT_COMPLETED"/>
-    
+    <uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+		
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="21" />
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true"/>
 
     <application
         android:allowBackup="true"
@@ -37,6 +45,11 @@
             android:theme="@android:style/Theme.NoTitleBar">
         </activity>
         
+        <activity
+            android:name=".MapActivity" 
+            android:theme="@android:style/Theme.NoTitleBar">
+        </activity>
+        
          <activity
             android:name=".CompletedActivity" 
             android:theme="@android:style/Theme.NoTitleBar">
@@ -58,6 +71,10 @@
          </receiver>
         
         <service android:name=".GeofenceTransitionsIntentService"/>
+        <meta-data
+		    android:name="com.google.android.geo.API_KEY"
+		    android:value="AIzaSyBzHbqhOma_PN52FHvilmqL3Jq1xPv1KuE"/>
+        
     </application>
 
 </manifest>

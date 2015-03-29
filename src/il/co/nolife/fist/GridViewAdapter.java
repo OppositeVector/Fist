@@ -35,6 +35,7 @@ public class GridViewAdapter extends ArrayAdapter<TaskType> {
 		ViewHolder holder = null;
 		if(convertView != null) {
 			holder = (ViewHolder) convertView.getTag();
+
 		}
 		if (holder == null){
 			holder = new ViewHolder();
@@ -42,10 +43,12 @@ public class GridViewAdapter extends ArrayAdapter<TaskType> {
 			holder.icon.setLayoutParams(new GridView.LayoutParams(220,280));
 			holder.icon.setScaleType(ImageView.ScaleType.CENTER_CROP);
 			holder.icon.setPadding(0,4,0,4);
+
 		}
 		convertView = holder.icon;
 		convertView.setTag(holder);
 		holder.icon.setImageResource(li.get(position).GetDrawable());
+
 		final TaskType tt = li.get(position);
 		holder.icon.setOnClickListener(new View.OnClickListener() {
 			
@@ -54,6 +57,7 @@ public class GridViewAdapter extends ArrayAdapter<TaskType> {
 				actionHandler.ButtonClick(tt);
 			}
 		});
+
 		return convertView;
 		
 	}
