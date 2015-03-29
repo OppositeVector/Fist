@@ -107,23 +107,27 @@ public class TaskCreator extends Activity {
 	}
 	
 	private void LocationClicked() {
+		Log.i("TESTING", "Map");
+		Intent chooseType = new Intent(this, MapActivity.class);
+		Log.i("TESTING", "Map2");
+		startActivityForResult(chooseType, 0);
 		
-		PlayServicesHandler handler = new PlayServicesHandler(this);
-		
-		if(handler.isReady()) {
-			
-			int PLACE_PICKER_REQUEST = 1;
-			try {
-				startActivityForResult(handler.GetPlacePicker().build(this), PLACE_PICKER_REQUEST);
-			} catch (GooglePlayServicesRepairableException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (GooglePlayServicesNotAvailableException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
+//		PlayServicesHandler handler = new PlayServicesHandler(this);
+//		
+//		if(handler.isReady()) {
+//			
+//			int PLACE_PICKER_REQUEST = 1;
+//			try {
+//				startActivityForResult(handler.GetPlacePicker().build(this), PLACE_PICKER_REQUEST);
+//			} catch (GooglePlayServicesRepairableException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (GooglePlayServicesNotAvailableException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
+//		}
 		
 	}
 	
