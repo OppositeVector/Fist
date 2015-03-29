@@ -13,11 +13,14 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 public class RebootAlarmSetter extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		
+		Log.i(getClass().toString(), "Recieved !");
 		
 		AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
 		
@@ -29,6 +32,7 @@ public class RebootAlarmSetter extends BroadcastReceiver {
 		Intent aIntent;
 		PendingIntent pIntent = null;
 		Random r = new Random(new Date().getTime());
+		Log.i(getClass().toString(), "HERE");
 		while(ti.hasNext()) {
 			
 			current = ti.next();
@@ -43,6 +47,7 @@ public class RebootAlarmSetter extends BroadcastReceiver {
 						pIntent = PendingIntent.getBroadcast(context, current.getAlarmId(), aIntent, PendingIntent.FLAG_NO_CREATE);
 						if(pIntent == null) {
 							pIntent = PendingIntent.getBroadcast(context, current.getAlarmId(), aIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+							Log.i(getClass().toString(), "Alarm set: " + current.getDate().getTime());
 							am.set(AlarmManager.RTC_WAKEUP, current.getDate().getTime(), pIntent);
 						}
 						
@@ -53,6 +58,7 @@ public class RebootAlarmSetter extends BroadcastReceiver {
 							pIntent = PendingIntent.getBroadcast(context, current.getAlarmId(), aIntent, PendingIntent.FLAG_NO_CREATE);
 						} while(pIntent != null);
 						pIntent = PendingIntent.getBroadcast(context, current.getAlarmId(), aIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+						Log.i(getClass().toString(), "Alarm set: " + current.getDate().getTime());
 						am.set(AlarmManager.RTC_WAKEUP, current.getDate().getTime(), pIntent);
 						
 					}

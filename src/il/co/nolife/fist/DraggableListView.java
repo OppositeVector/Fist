@@ -32,6 +32,9 @@ public class DraggableListView extends ListView {
 	ViewPropertyAnimator currentlyAnimating;
 	float itemVelocity;
 	float previousX;
+	float delta1;
+	float delta2;
+	float delta3;
 	float currentDelta;
 	float offset;
 	float originalPress;
@@ -61,6 +64,9 @@ public class DraggableListView extends ListView {
 			originalPress = ev.getX();
 			previousX = originalPress;
 			currentDelta = 0;
+			delta1 = 0;
+			delta2 = 0;
+			delta3 = 0;
 			break;
 		
 		}
@@ -76,7 +82,10 @@ public class DraggableListView extends ListView {
 			if(currentlyPressed != null) {
 				offset = ev.getX() - originalPress;
 				currentlyPressed.setX(currentlyPressedOriginalX + offset);
-				currentDelta = ((ev.getX() - previousX) + currentDelta) / 2;
+				currentDelta = ((ev.getX() - previousX) + delta1 + delta2 + delta3) / 4;
+				delta3 = delta2;
+				delta2 = delta1;
+				delta1 = currentDelta;
 				previousX = ev.getX();
 			}
 			break;
@@ -84,8 +93,6 @@ public class DraggableListView extends ListView {
 		case MotionEvent.ACTION_UP:
 			if(currentlyPressed != null) {
 				
-				Log.i(getClass().toString(), currentlyPressed.toString());
-				Log.i(getClass().toString(), remover.toString());
 				TaskListAdapter.ViewHolder h = (TaskListAdapter.ViewHolder)currentlyPressed.getTag();
 				Log.i(getClass().toString(), ((ITask) getAdapter().getItem(h.taskListIndex)).toString());
 				AnimationHelper helper;

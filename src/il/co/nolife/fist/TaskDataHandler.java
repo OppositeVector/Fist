@@ -152,6 +152,14 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 	    
 	}
 	
+	public void DeleteTask(ITask t) {
+		
+		db.execSQL("delete from " + COMPLETED_TABLE + " where " + ID + "=" + t.getId() + ";");
+		
+		completeList.remove(t);
+		
+	}
+	
 	public ITask GetTask(int id) {
 		
 		Cursor tasksData = db.rawQuery("select * from " + TASKS_TABLE + " where " + ID + "='" + id + "'", null);

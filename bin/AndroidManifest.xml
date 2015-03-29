@@ -60,7 +60,8 @@
             android:theme="@android:style/Theme.NoTitleBar">
          </activity>
         
-         <receiver android:name="il.co.nolife.fist.RebootAlarmSetter">
+         <receiver android:name="il.co.nolife.fist.RebootAlarmSetter"
+             	   android:enabled="true">
              <intent-filter>
                  <action android:name="android.intent.action.BOOT_COMPLETED"/>
              </intent-filter>
@@ -69,11 +70,6 @@
          <receiver android:name="il.co.nolife.fist.AlarmWaker">
              
          </receiver>
-        
-        <service android:name=".GeofenceTransitionsIntentService"/>
-        <meta-data
-		    android:name="com.google.android.geo.API_KEY"
-		    android:value="AIzaSyBzHbqhOma_PN52FHvilmqL3Jq1xPv1KuE"/>
         
     </application>
 

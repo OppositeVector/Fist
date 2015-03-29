@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Switch;
@@ -62,10 +63,25 @@ public class TaskCreator extends Activity {
 		});
 		
 		description = (TextView) findViewById(R.id.description);
-		date = (DatePicker) findViewById(R.id.date);
+		date = (DatePicker) findViewById(R.id.date_picker);
 		time = (TimePicker) findViewById(R.id.time);
 		notify = (Switch) findViewById(R.id.notify);
 		
+		description.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if(!hasFocus) {
+					hideKeyboard(v);
+				}
+			}
+		});
+		
+	}
+	
+	private void hideKeyboard(View view) {
+		InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 	}
 	
 	private void DoneClicked() {

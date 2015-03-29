@@ -52,14 +52,21 @@ public class MainActivity extends Activity implements ItemRemover {
 		
 		Button completeButton = (Button) findViewById(R.id.complete_button);
 		completeButton.setOnClickListener(new View.OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
 				CompleteButtonClicked();
 			}
 		});
 		
-		Log.i(getClass().toString(), "HERE");
+//		Button debug = (Button) findViewById(R.id.Button01);
+//		debug.setOnClickListener(new View.OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+//				Log.i("HERE", "HERE");
+//				sendBroadcast(new Intent(getApplicationContext(), RebootAlarmSetter.class));
+//			}
+//		});
 		
 	}
 	

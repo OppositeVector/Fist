@@ -78,6 +78,7 @@ public class TaskListAdapter extends ArrayAdapter<ITask> {
 		holder.text.setText(tasks.get(position).getDescription());
 		holder.date.setText(tasks.get(position).getDate().toString());
 		holder.taskListIndex = position;
+		convertView.setX(0);
 		
 		return convertView;
 		

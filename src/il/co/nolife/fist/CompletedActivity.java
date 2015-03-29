@@ -18,12 +18,12 @@ import android.widget.ListView;
 import android.content.Intent;
 import android.database.sqlite.*;
 
-public class CompletedActivity extends Activity {
+public class CompletedActivity extends Activity implements ItemRemover {
 	
 	private TaskDataHandler doa;
 	private TaskListAdapter listAdapter;
 	private List<ITask> filteredList;
-	private ListView lv;
+	private DraggableListView lv;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +34,11 @@ public class CompletedActivity extends Activity {
 		setContentView(R.layout.completed);
 		
 		doa = new TaskDataHandler(this);
-		filteredList = new ArrayList<ITask>();
-		UpdateList();
-		lv = (ListView) findViewById(R.id.task_list);
+		filteredList = doa.GetList(true);
+		lv = (DraggableListView) findViewById(R.id.task_list);
 		listAdapter = new TaskListAdapter(this, filteredList);
 		lv.setAdapter(listAdapter);
+		lv.SetRemover(this);
 		
 		Button newTaskButton = (Button) findViewById(R.id.plus_button);
 		newTaskButton.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +90,12 @@ public class CompletedActivity extends Activity {
 		for(int i = 0; i < filteredList.size(); i++) {
 			Log.i(getClass().toString(), " " + filteredList.get(i).getId());
 		}
+	}
+
+	@Override
+	public void RemoveTaskItem(ITask t) {
+		doa.DeleteTask(t);
+		UpdateList();
 	}
 	
 }
