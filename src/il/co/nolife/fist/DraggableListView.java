@@ -37,11 +37,17 @@ public class DraggableListView extends ListView {
 	float originalPress;
 	float originalX;
 	
+	List<AnimationHelper> helpers;
+	
+	private ItemRemover remover;
+	
 	public DraggableListView(Context context, AttributeSet attrs) {
 		
 		super(context, attrs);
 		dropListeners = new ArrayList<OnDropListener>();
 		itemVelocity = 0;
+		helpers = new ArrayList<AnimationHelper>();
+		remover = null;
 		
 	}
 	
@@ -77,39 +83,21 @@ public class DraggableListView extends ListView {
 			
 		case MotionEvent.ACTION_UP:
 			if(currentlyPressed != null) {
-				currentlyAnimating = currentlyPressed.animate();
-				currentlyAnimating.setInterpolator(new DecelerateInterpolator(0.8f));
-				currentlyAnimating.xBy(currentDelta * 10);
-				currentlyAnimating.setListener(new AnimatorListener() {
-					
-					
-					@Override
-					public void onAnimationEnd(Animator animation) {
-						currentlyAnimating.setInterpolator(new AccelerateInterpolator(0.5f));
-						currentlyAnimating.translationX(0);
-						currentlyAnimating.start();
-						currentlyAnimating.setListener(null);
-					}
-
-					@Override
-					public void onAnimationStart(Animator animation) {
-						animation.setStartDelay(0);
-					}
-
-					@Override
-					public void onAnimationCancel(Animator animation) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					@Override
-					public void onAnimationRepeat(Animator animation) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-				});
+				
+				Log.i(getClass().toString(), currentlyPressed.toString());
+				Log.i(getClass().toString(), remover.toString());
+				TaskListAdapter.ViewHolder h = (TaskListAdapter.ViewHolder)currentlyPressed.getTag();
+				Log.i(getClass().toString(), ((ITask) getAdapter().getItem(h.taskListIndex)).toString());
+				AnimationHelper helper;
+				if(remover != null) {
+					helper = new AnimationHelper(currentlyPressed, (ITask) getAdapter().getItem(h.taskListIndex), this, remover);
+				} else {
+					helper = new AnimationHelper(currentlyPressed, (ITask) getAdapter().getItem(h.taskListIndex), this);
+				}
+				helpers.add(helper);
+				helper.AnimateInDirection(currentDelta);
 				previousX = 0;
+				
 			}
 			// itemVelocity = ev.getX() - previousX;
 			break;
@@ -130,6 +118,14 @@ public class DraggableListView extends ListView {
 
 	public interface OnDropListener {
 		// public void ItemDropped(View v, );
+	}
+	
+	public void RemoveFromList(AnimationHelper h) {
+		helpers.remove(h);
+	}
+	
+	public void SetRemover(ItemRemover r) {
+		remover = r;
 	}
 	
 }

@@ -22,7 +22,7 @@ import android.util.Log;
 public class TaskDataHandler extends SQLiteOpenHelper {
 
 	public static final String DATABASE_NAME = "fistDatabase.db";
-	public static final int DATABASE_VERSION = 4;
+	public static final int DATABASE_VERSION = 5;
 	
 	public static final String TASKS_TABLE = "tasks";
 	public static final String COMPLETED_TABLE = "complete_task";
@@ -39,12 +39,35 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	public static final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
 	
-	private SQLiteDatabase db;
+	private static SQLiteDatabase db;
+	private static int counter = 0;
+	private static List<ITask> taskList;
+	private static List<ITask> completeList;
+	
+	static {
+		
+		db = null;
+		counter = 0;
+		taskList = null;
+		completeList = null;
+		
+	}
 
 	public TaskDataHandler(Context context) {
 		
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-		db = getWritableDatabase();
+		if(db == null) {
+			db = getWritableDatabase();
+		}
+		
+		if(taskList == null) {
+			taskList = new ArrayList<ITask>();
+			InternalGetTasks(taskList, TASKS_TABLE);
+			completeList = new ArrayList<ITask>();
+			InternalGetTasks(completeList, COMPLETED_TABLE);
+		}
+		
+		++counter;
 		
 	}
 
@@ -99,28 +122,33 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 	    values.put(ALARM_ID, task.getAlarmId());
 	    values.put(GEO_ID, task.getGeofence());
 	    
+	    taskList.add(task);
+	    
 	    return (int) db.insert(TASKS_TABLE, null, values);
 	    
 	}
 	
-	public void MoveTaskToComplete(ITask task) {
+	public void MoveTaskToComplete(ITask t) {
 		
-		IconedTask cTask = (IconedTask) task;
+		IconedTask task = (IconedTask) t;
 		
-		db.execSQL("delete from " + TASKS_TABLE + " where " + ID + "='" + cTask.getId() + "'");
+		db.execSQL("delete from " + TASKS_TABLE + " where " + ID + "=" + task.getId() + ";");
 		
 		ContentValues values = new ContentValues();
 		
-	    values.put(DESCRIPTION, cTask.getDescription());
-	    values.put(TYPE, cTask.getType().ordinal());
-	    values.put(DATE, dateFormat.format(cTask.getDate()));
-	    values.put(LONGITUDE, cTask.getLongitude());
-	    values.put(LATITUDE, cTask.getLatitude());
-	    values.put(NOTIFY, cTask.getNotify());
-	    values.put(ALARM_ID, cTask.getAlarmId());
-	    values.put(GEO_ID, cTask.getGeofence());
+	    values.put(DESCRIPTION, task.getDescription());
+	    values.put(TYPE, task.getType().ordinal());
+	    values.put(DATE, dateFormat.format(task.getDate()));
+	    values.put(LONGITUDE, task.getLongitude());
+	    values.put(LATITUDE, task.getLatitude());
+	    values.put(NOTIFY, task.getNotify());
+	    values.put(ALARM_ID, task.getAlarmId());
+	    values.put(GEO_ID, task.getGeofence());
 		
 	    db.insert(COMPLETED_TABLE, null, values);
+	    
+	    taskList.remove(task);
+	    completeList.add(task);
 	    
 	}
 	
@@ -154,7 +182,7 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 		
 	}
 	
-	public void GetTasks(List<ITask> taskList) {
+	private void InternalGetTasks(List<ITask> taskList, String table) {
 	
 		if(taskList == null) {
 			
@@ -163,7 +191,9 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 			
 		}
 		
-		Cursor tasksData = db.rawQuery("select * from " + TASKS_TABLE, null);
+		Cursor tasksData = db.rawQuery("select * from " + table, null);
+		
+		Log.i(getClass().toString(), DatabaseUtils.dumpCursorToString(tasksData));
 		
 		int idIndex = tasksData.getColumnIndex(ID);
 		int desriptionIndex = tasksData.getColumnIndex(DESCRIPTION);
@@ -182,10 +212,12 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 		int notify;
 		
 		Iterator<ITask> listIterator = taskList.iterator();
+		int i = 0;
 		
 		if(tasksData.moveToFirst()) {
 			do {
 				
+				id = tasksData.getInt(idIndex);
 				desc = tasksData.getString(desriptionIndex);
 				try {
 					date = dateFormat.parse(tasksData.getString(dateIndex));
@@ -198,89 +230,95 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 				latitude = tasksData.getLong(latitudeIndex);
 				notify = tasksData.getInt(notifyIndex);
 				
-				if(listIterator.hasNext()) {
+				if(i < taskList.size()) {
 					
-					ITask current = listIterator.next();
+					ITask current = taskList.get(i);
+					current.setId(id);
 					current.setDescription(desc);
 					current.setDate(date);
 					current.setType(type);
 					current.setLongitude(longitude);
 					current.setLatitude(latitude);
 					current.setNotify(notify);
+					i++;
 					
 				} else {
-					
-					taskList.add(new IconedTask(desc, date, type, longitude, latitude, notify));
+					taskList.add(new IconedTask(id, desc, date, type, longitude, latitude, notify));
+					i++;
 				}
 			} while(tasksData.moveToNext());
+			
+			while(i < taskList.size()) {
+				taskList.remove(i);
+			}
 			
 		}
 		
 	}
 	
-	public void GetCompleteTasks(List<ITask> taskList) {
-		
-		if(taskList == null) {
-			
-			Log.e(getClass().toString(), "taskList given is null");
-			return;
-			
-		}
-		
-		Cursor tasksData = db.rawQuery("select * from " + COMPLETED_TABLE, null);
-		
-		int idIndex = tasksData.getColumnIndex(ID);
-		int desriptionIndex = tasksData.getColumnIndex(DESCRIPTION);
-		int typeIndex = tasksData.getColumnIndex(TYPE);
-		int dateIndex = tasksData.getColumnIndex(DATE);
-		int longitudeIndex = tasksData.getColumnIndex(LONGITUDE);
-		int latitudeIndex = tasksData.getColumnIndex(LATITUDE);
-		int notifyIndex = tasksData.getColumnIndex(NOTIFY);
-		
-		int id;
-		String desc;
-		Date date;
-		TaskType type;
-		long longitude;
-		long latitude;
-		int notify;
-		
-		Iterator<ITask> listIterator = taskList.iterator();
-		
-		if(tasksData.moveToFirst()) {
-			do {
-				
-				desc = tasksData.getString(desriptionIndex);
-				try {
-					date = dateFormat.parse(tasksData.getString(dateIndex));
-				} catch (ParseException e) {
-					e.printStackTrace();
-					date = new Date();
-				}
-				type = TaskType.values()[tasksData.getInt(typeIndex)];
-				longitude = tasksData.getLong(longitudeIndex);
-				latitude = tasksData.getLong(latitudeIndex);
-				notify = tasksData.getInt(notifyIndex);
-				
-				if(listIterator.hasNext()) {
-					
-					ITask current = listIterator.next();
-					current.setDescription(desc);
-					current.setDate(date);
-					current.setType(type);
-					current.setLongitude(longitude);
-					current.setLatitude(latitude);
-					current.setNotify(notify);
-					
-				} else {
-					
-					taskList.add(new IconedTask(desc, date, type, longitude, latitude, notify));
-				}
-			} while(tasksData.moveToNext());
-			
-		}
-		
-	}
+//	public void GetCompleteTasks(List<ITask> taskList) {
+//		
+//		if(taskList == null) {
+//			
+//			Log.e(getClass().toString(), "taskList given is null");
+//			return;
+//			
+//		}
+//		
+//		Cursor tasksData = db.rawQuery("select * from " + COMPLETED_TABLE, null);
+//		
+//		int idIndex = tasksData.getColumnIndex(ID);
+//		int desriptionIndex = tasksData.getColumnIndex(DESCRIPTION);
+//		int typeIndex = tasksData.getColumnIndex(TYPE);
+//		int dateIndex = tasksData.getColumnIndex(DATE);
+//		int longitudeIndex = tasksData.getColumnIndex(LONGITUDE);
+//		int latitudeIndex = tasksData.getColumnIndex(LATITUDE);
+//		int notifyIndex = tasksData.getColumnIndex(NOTIFY);
+//		
+//		int id;
+//		String desc;
+//		Date date;
+//		TaskType type;
+//		long longitude;
+//		long latitude;
+//		int notify;
+//		
+//		Iterator<ITask> listIterator = taskList.iterator();
+//		
+//		if(tasksData.moveToFirst()) {
+//			do {
+//				
+//				desc = tasksData.getString(desriptionIndex);
+//				try {
+//					date = dateFormat.parse(tasksData.getString(dateIndex));
+//				} catch (ParseException e) {
+//					e.printStackTrace();
+//					date = new Date();
+//				}
+//				type = TaskType.values()[tasksData.getInt(typeIndex)];
+//				longitude = tasksData.getLong(longitudeIndex);
+//				latitude = tasksData.getLong(latitudeIndex);
+//				notify = tasksData.getInt(notifyIndex);
+//				
+//				if(listIterator.hasNext()) {
+//					
+//					ITask current = listIterator.next();
+//					current.setDescription(desc);
+//					current.setDate(date);
+//					current.setType(type);
+//					current.setLongitude(longitude);
+//					current.setLatitude(latitude);
+//					current.setNotify(notify);
+//					
+//				} else {
+//					
+//					taskList.add(new IconedTask(desc, date, type, longitude, latitude, notify));
+//				}
+//			} while(tasksData.moveToNext());
+//			
+//		}
+//		
+//	}
 	
 	public List<ComboData> GetAlarmData() {
 		
@@ -346,8 +384,28 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 		
 	}
 	
-	public void Close() {
-		db.close();
+	public List<ITask> GetList(boolean complete) {
+		if(complete) {
+			return completeList;
+		} else {
+			return taskList;
+		}
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		// TODO Auto-generated method stub
+		super.finalize();
+		--counter;
+		if(counter < 1) {
+			
+			db.close();
+			db = null;
+			counter = 0;
+			taskList = null;
+			completeList = null;
+			
+		}
 	}
 	
 }

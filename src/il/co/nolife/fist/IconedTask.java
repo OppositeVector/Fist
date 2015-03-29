@@ -10,7 +10,13 @@ public class IconedTask extends ComboData implements ITask {
 	private TaskType type;
 
 	public IconedTask(String description, Date date, TaskType type, long lon, long lat, int n) {
-		super(date, n,lon, lat);
+		super(date, n, lon, lat);
+		this.description = description;
+		this.type = type;
+	}
+	
+	public IconedTask(int id, String description, Date date, TaskType type, long lon, long lat, int n) {
+		super(id, date, n, lon, lat);
 		this.description = description;
 		this.type = type;
 	}

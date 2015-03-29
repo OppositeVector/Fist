@@ -22,11 +22,12 @@ public class TaskListAdapter extends ArrayAdapter<ITask> {
 	float originalX;
 	float downX;
 	
-	private class ViewHolder {
+	public class ViewHolder {
 		
 		public ImageView icon;
 		public TextView text;
 		public TextView date;
+		public int taskListIndex;
 		
 	}
 	
@@ -76,6 +77,7 @@ public class TaskListAdapter extends ArrayAdapter<ITask> {
 		holder.icon.setImageResource(tasks.get(position).getType().GetDrawable());
 		holder.text.setText(tasks.get(position).getDescription());
 		holder.date.setText(tasks.get(position).getDate().toString());
+		holder.taskListIndex = position;
 		
 		return convertView;
 		

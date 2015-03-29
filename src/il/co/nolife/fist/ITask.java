@@ -11,6 +11,7 @@ public interface ITask {
 	public long getLongitude();
 	public long getLatitude();
 	public boolean getNotify();
+	public int getId();
 	
 	public void setType(TaskType type);
 	public void setDescription(String decscription);
@@ -18,5 +19,6 @@ public interface ITask {
 	public void setLongitude(long longitude);
 	public void setLatitude(long latitude);
 	public void setNotify(int notify);
+	public void setId(int id);
 	
 }

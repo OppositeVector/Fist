@@ -23,6 +23,7 @@ public class CompletedActivity extends Activity {
 	private TaskDataHandler doa;
 	private TaskListAdapter listAdapter;
 	private List<ITask> filteredList;
+	private ListView lv;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class CompletedActivity extends Activity {
 		doa = new TaskDataHandler(this);
 		filteredList = new ArrayList<ITask>();
 		UpdateList();
-		ListView lv = (ListView) findViewById(R.id.task_list);
+		lv = (ListView) findViewById(R.id.task_list);
 		listAdapter = new TaskListAdapter(this, filteredList);
 		lv.setAdapter(listAdapter);
 		
@@ -83,7 +84,12 @@ public class CompletedActivity extends Activity {
 	}
 	
 	void UpdateList() {
-		doa.GetCompleteTasks(filteredList);
+		Log.i(getClass().toString(), "before");
+		lv.postInvalidate();
+		listAdapter.notifyDataSetChanged();
+		for(int i = 0; i < filteredList.size(); i++) {
+			Log.i(getClass().toString(), " " + filteredList.get(i).getId());
+		}
 	}
 	
 }

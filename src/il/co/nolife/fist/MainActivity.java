@@ -18,11 +18,12 @@ import android.widget.ListView;
 import android.content.Intent;
 import android.database.sqlite.*;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements ItemRemover {
 	
 	private TaskDataHandler doa;
 	private TaskListAdapter listAdapter;
 	private List<ITask> filteredList;
+	private DraggableListView lv;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +34,11 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 		doa = new TaskDataHandler(this);
-		filteredList = new ArrayList<ITask>();
-		UpdateList();
-		ListView lv = (ListView) findViewById(R.id.task_list);
+		filteredList = doa.GetList(false);
+		lv = (DraggableListView) findViewById(R.id.task_list);
 		listAdapter = new TaskListAdapter(this, filteredList);
 		lv.setAdapter(listAdapter);
+		lv.SetRemover(this);
 		
 		Button newTaskButton = (Button) findViewById(R.id.plus_button);
 		newTaskButton.setOnClickListener(new View.OnClickListener() {
@@ -57,6 +58,8 @@ public class MainActivity extends Activity {
 				CompleteButtonClicked();
 			}
 		});
+		
+		Log.i(getClass().toString(), "HERE");
 		
 	}
 	
@@ -80,7 +83,18 @@ public class MainActivity extends Activity {
 	}
 	
 	void UpdateList() {
-		doa.GetTasks(filteredList);
+		Log.i(getClass().toString(), "before");
+		lv.postInvalidate();
+		listAdapter.notifyDataSetChanged();
+		for(int i = 0; i < filteredList.size(); i++) {
+			Log.i(getClass().toString(), " " + filteredList.get(i).getId());
+		}
+	}
+
+	@Override
+	public void RemoveTaskItem(ITask t) {
+		doa.MoveTaskToComplete(t);
+		UpdateList();
 	}
 	
 }
