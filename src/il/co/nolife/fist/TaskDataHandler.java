@@ -1,5 +1,7 @@
 package il.co.nolife.fist;
 
+import il.co.nolife.fist.MainActivity.TrackerName;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,6 +10,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -44,6 +49,8 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 	private static List<ITask> taskList;
 	private static List<ITask> completeList;
 	
+	private Context context;
+	
 	static {
 		
 		db = null;
@@ -66,6 +73,8 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 			completeList = new ArrayList<ITask>();
 			InternalGetTasks(completeList, COMPLETED_TABLE);
 		}
+		
+		this.context = context;
 		
 		++counter;
 		
@@ -124,6 +133,13 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 	    
 	    taskList.add(task);
 	    
+	    Tracker t = MainActivity.getTracker(TrackerName.APP_TRACKER, context);
+		t.send(new HitBuilders.EventBuilder()
+				 .setCategory("Tasks")
+				 .setAction("Created")
+				 .setLabel(task.getType().toString())
+				 .build());
+	    
 	    return (int) db.insert(TASKS_TABLE, null, values);
 	    
 	}
@@ -150,6 +166,13 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 	    taskList.remove(task);
 	    completeList.add(task);
 	    
+	    Tracker tr = MainActivity.getTracker(TrackerName.APP_TRACKER, context);
+	    tr.send(new HitBuilders.EventBuilder()
+				 .setCategory("Tasks")
+				 .setAction("Moved to completed")
+				 .setLabel(task.getType().toString())
+				 .build());
+	    
 	}
 	
 	public void DeleteTask(ITask t) {
@@ -157,6 +180,13 @@ public class TaskDataHandler extends SQLiteOpenHelper {
 		db.execSQL("delete from " + COMPLETED_TABLE + " where " + ID + "=" + t.getId() + ";");
 		
 		completeList.remove(t);
+		
+		Tracker tr = MainActivity.getTracker(TrackerName.APP_TRACKER, context);
+		tr.send(new HitBuilders.EventBuilder()
+		 .setCategory("Tasks")
+		 .setAction("Deleted")
+		 .setLabel(t.getType().toString())
+		 .build());
 		
 	}
 	

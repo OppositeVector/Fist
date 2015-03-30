@@ -52,16 +52,6 @@ public class TaskCreator extends Activity {
 			
 		});
 		
-		btn = (Button) findViewById(R.id.location);
-		btn.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				LocationClicked();
-			}
-			
-		});
-		
 		description = (TextView) findViewById(R.id.description);
 		date = (DatePicker) findViewById(R.id.date_picker);
 		time = (TimePicker) findViewById(R.id.time);

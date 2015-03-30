@@ -13,14 +13,6 @@
         android:background="#fff"
         android:inputType="text"
         />
-   <Button
-       android:id="@+id/location"
-       android:layout_width="match_parent"
-       android:layout_height="100dp"
-       android:layout_marginTop="485dp"
-       android:text="location"
-       android:background="#c38099"
-       android:textSize="24dp"/>
 
     <TimePicker
         android:id="@+id/time"
